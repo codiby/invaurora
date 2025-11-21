@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f2fbf9;
+  --foreground: #0f4d4a;
+
+  /* Mint Victorian Palette */
+  --mint-50: #f2fbf9;
+  --mint-100: #d1f0e9;
+  --mint-200: #a3decf;
+  --mint-300: #70c5b0;
+  --mint-800: #115e59;
+  --mint-900: #0f4d4a;
+
+  /* Gold Palette */
+  --gold-100: #fdf6d8;
+  --gold-400: #d4af37;
+  --gold-600: #aa8c2c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Font families */
+  --font-family-sans: var(--font-geist-sans);
+  --font-family-mono: var(--font-geist-mono);
+  --font-family-serif: var(--font-serif);
+  --font-family-script: var(--font-script);
+  --font-family-body: var(--font-body);
+
+  /* Mint color tokens */
+  --color-mint-50: var(--mint-50);
+  --color-mint-100: var(--mint-100);
+  --color-mint-200: var(--mint-200);
+  --color-mint-300: var(--mint-300);
+  --color-mint-800: var(--mint-800);
+  --color-mint-900: var(--mint-900);
+
+  /* Gold color tokens */
+  --color-gold-100: var(--gold-100);
+  --color-gold-400: var(--gold-400);
+  --color-gold-600: var(--gold-600);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--mint-50);
+  color: var(--mint-900);
+  font-family: "Lato", var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Styles for Victorian Flourishes */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  opacity: 0.6;
+}
+
+.ornament-divider::before,
+.ornament-divider::after {
+  content: "";
+  height: 1px;
+  background-color: var(--gold-400);
+  flex-grow: 1;
+  max-width: 100px;
+  margin: 0 15px;
+}
+
+.victorian-border {
+  border: 4px double var(--gold-400);
+  padding: 2px;
+  position: relative;
+}
+
+.victorian-frame {
+  position: relative;
+}
+
+.victorian-frame::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 1px solid var(--gold-400);
+  z-index: -1;
+  border-radius: 4px;
+}
+
+/* Input styling override */
+.form-input:focus {
+  outline: none;
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 1px var(--gold-400);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mint-300);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mint-800);
 }
