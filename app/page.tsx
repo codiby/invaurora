@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,6 +11,37 @@ export default function Home() {
     minutes: 0,
     seconds: 0,
   });
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Audio Control
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  // Autoplay on mount
+  useEffect(() => {
+    const playAudio = async () => {
+      if (audioRef.current) {
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch (error) {
+          // Autoplay was prevented by browser
+          console.log("Autoplay prevented. User interaction needed.");
+        }
+      }
+    };
+    playAudio();
+  }, []);
 
   // Countdown Logic
   useEffect(() => {
@@ -125,27 +156,51 @@ export default function Home() {
 
   return (
     <>
+      {/* Hidden Audio Element */}
+      <audio ref={audioRef} loop>
+        <source src="/audio.mp3" type="audio/mpeg" />
+      </audio>
+
       {/* Navigation / Floating Audio Control */}
       <div className="fixed top-4 right-4 z-50">
         <button
           id="music-btn"
+          onClick={toggleMusic}
           className="bg-white/80 backdrop-blur p-3 rounded-full shadow-lg border border-gold-400 text-gold-600 hover:scale-105 transition"
+          aria-label={isPlaying ? "Pause music" : "Play music"}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M9 18V5l12-2v13" />
-            <circle cx="6" cy="18" r="3" />
-            <circle cx="18" cy="16" r="3" />
-          </svg>
+          {isPlaying ? (
+            // Pause Icon
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
+            </svg>
+          ) : (
+            // Play Icon
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          )}
         </button>
       </div>
 
@@ -160,15 +215,20 @@ export default function Home() {
 
         <div className="relative z-10 max-w-2xl mx-auto gsap-hero">
           <p className="font-serif tracking-[0.2em] text-gold-600 mb-4 text-sm uppercase">
-            Estás invitado a los
+            La familia Cabrera Galaviz presenta
           </p>
-          <h1 className="font-script text-7xl md:text-9xl text-mint-800 mb-2 leading-tight drop-shadow-sm">
-            XV Años
-          </h1>
-          <div className="w-24 h-1 bg-gold-400 mx-auto my-6 rounded-full"></div>
-          <h2 className="font-serif text-3xl md:text-5xl text-gray-800 mb-6 px-2">
-            Aurora Guadalupe <br /> Cabrera Galaviz
+          <h2 className="font-montecarlo text-5xl md:text-5xl text-gray-800 mb-6 px-2">
+            Aurora
           </h2>
+          <h2 className="font-serif text-2xl md:text-2xl text-gold-600 mb-6 px-2">
+            Guadalupe
+          </h2>
+          <div className="w-32 h-0.5 bg-gold-300 mx-auto my-6 rounded-full"></div>
+
+          <h1 className="font-test text-1xl md:text-lg text-mint-800 mb-2 leading-tight drop-shadow-sm">
+            XV AÑOS
+          </h1>
+
           <p className="font-serif text-xl text-gold-600 font-semibold tracking-widest">
             20 . 12 . 2025
           </p>
@@ -192,6 +252,53 @@ export default function Home() {
       </header>
 
       {/* 2. Countdown Section */}
+
+      {/* 3. Family Section */}
+      <section className=" py-20 px-4 bg-mint-100/60 relative overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-mint-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-gold-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 translate-y-1/2"></div>
+
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <div className="gsap-fade space-y-8">
+            <div>
+              <h3 className="font-script text-4xl md:text-5xl text-gold-600 mb-6">
+                Con la bendición de mis padres
+              </h3>
+              <p className="font-serif text-xl text-gray-700">
+                Jorge Luis Cabrera Heras
+              </p>
+              <span className="text-gold-400 text-lg">&</span>
+              <p className="font-serif text-xl text-gray-700">
+                Lucero Abigail Galaviz Alcala
+              </p>
+            </div>
+
+            <div className="w-16 h-px bg-gold-400 mx-auto"></div>
+
+            <div>
+              <h4 className="font-serif text-lg uppercase tracking-widest text-gold-600 mb-4">
+                Mis Padrinos
+              </h4>
+              <p className="font-body text-lg text-gray-700">
+                Oscar Galaviz y Carmen Fierro
+              </p>
+            </div>
+
+            <div className="w-16 h-px bg-gold-400 mx-auto"></div>
+
+            <div>
+              <h4 className="font-serif text-lg uppercase tracking-widest text-gold-600 mb-4">
+                Mi Chambelán
+              </h4>
+              <p className="font-body text-lg text-gray-700">
+                Diego Alonso Gallegos
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16 px-4 bg-white relative">
         <div className="max-w-4xl mx-auto text-center gsap-fade">
           <div className="ornament-divider">
@@ -257,52 +364,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. Family Section */}
-      <section className="py-20 px-4 bg-mint-100/30 relative overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-mint-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-gold-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 translate-y-1/2"></div>
-
-        <div className="max-w-3xl mx-auto text-center relative z-10">
-          <div className="gsap-fade space-y-8">
-            <div>
-              <h3 className="font-script text-4xl md:text-5xl text-mint-800 mb-6">
-                Con la bendición de mis padres
-              </h3>
-              <p className="font-serif text-xl text-gray-700">
-                Jorge Luis Cabrera Heras
-              </p>
-              <span className="text-gold-400 text-lg">&</span>
-              <p className="font-serif text-xl text-gray-700">
-                Lucero Abigail Galaviz Alcala
-              </p>
-            </div>
-
-            <div className="w-16 h-px bg-gold-400 mx-auto"></div>
-
-            <div>
-              <h4 className="font-serif text-lg uppercase tracking-widest text-gold-600 mb-4">
-                Mis Padrinos
-              </h4>
-              <p className="font-body text-lg text-gray-700">
-                Oscar Galaviz y Carmen Fierro
-              </p>
-            </div>
-
-            <div className="w-16 h-px bg-gold-400 mx-auto"></div>
-
-            <div>
-              <h4 className="font-serif text-lg uppercase tracking-widest text-gold-600 mb-4">
-                Mi Chambelán
-              </h4>
-              <p className="font-body text-lg text-gray-700">
-                Diego Alonso Gallegos
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 4. Event Details */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
@@ -334,7 +395,7 @@ export default function Home() {
               <h3 className="font-serif text-2xl text-mint-900 mb-2">
                 Ceremonia Religiosa
               </h3>
-              <p className="text-gold-600 font-bold mb-4">Horario: Pendiente</p>
+              <p className="text-gold-600 font-bold mb-4">Horario: 4:00 P.M.</p>
               <p className="text-gray-600 mb-6">
                 Iglesia Santa Isabel del Portugal
               </p>
@@ -368,7 +429,7 @@ export default function Home() {
               <h3 className="font-serif text-2xl text-mint-900 mb-2">
                 Recepción
               </h3>
-              <p className="text-gold-600 font-bold mb-4">Horario: Pendiente</p>
+              <p className="text-gold-600 font-bold mb-4">Horario: 8:00 P.M.</p>
               <p className="text-gray-600 mb-6">Salón San Juan</p>
               <a
                 href="https://www.google.com/maps/search/?api=1&query=Salon+San+Juan"
@@ -430,7 +491,7 @@ export default function Home() {
       </section>
 
       {/* 6. Dress Code */}
-      <section className="py-16 bg-mint-800 text-white text-center">
+      <section className="relative py-16 bg-mint-800 text-white text-center z-10">
         <div className="max-w-2xl mx-auto px-4 gsap-fade">
           <div className="w-16 h-16 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-6">
             <svg
@@ -450,12 +511,8 @@ export default function Home() {
           <h3 className="font-serif text-2xl uppercase tracking-widest mb-4 text-gold-100">
             Código de Vestimenta
           </h3>
-          <p className="font-script text-4xl mb-2 text-white">
-            Formal / Etiqueta
-          </p>
-          <p className="text-mint-200 text-sm">
-            Sugerimos toques victorianos o colores pastel.
-          </p>
+          <p className="font-script text-4xl mb-2 text-white">Semi-Formal</p>
+          <p className="text-mint-200 text-sm"></p>
         </div>
       </section>
 

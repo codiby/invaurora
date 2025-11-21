@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Cinzel, Lato } from "next/font/google";
+import { Geist, Geist_Mono, Cinzel, Lato, MonteCarlo } from "next/font/google";
 import { Pinyon_Script } from "next/font/google";
 import "./globals.css";
 
@@ -23,6 +23,7 @@ const pinyonScript = Pinyon_Script({
   variable: "--font-script",
   subsets: ["latin"],
   weight: ["400"],
+  display: "swap",
 });
 
 const lato = Lato({
@@ -31,10 +32,20 @@ const lato = Lato({
   weight: ["300", "400", "700"],
 });
 
+const montecarlo = MonteCarlo({
+  variable: "--font-montecarlo",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
   title: "XV Años - Aurora Guadalupe",
-  description: "Celebremos juntos los XV años de Aurora Guadalupe Cabrera Galaviz - 20 de Diciembre 2025",
+  description:
+    "Celebremos juntos los XV años de Aurora Guadalupe Cabrera Galaviz - 20 de Diciembre 2025",
 };
+
+const fonts = [geistSans, geistMono, cinzel, pinyonScript, lato, montecarlo];
+const fontVariables = fonts.map((font) => font.variable).join(" ");
 
 export default function RootLayout({
   children,
@@ -44,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} ${pinyonScript.variable} ${lato.variable} bg-mint-50 text-mint-900 font-body antialiased`}
+        className={`${fontVariables} bg-mint-50 text-mint-900 font-body antialiased`}
       >
         {children}
       </body>
