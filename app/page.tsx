@@ -277,10 +277,10 @@ export default function Home() {
             <div className="w-16 h-px bg-gold-400 mx-auto"></div>
 
             <div>
-              <h4 className="font-serif text-lg uppercase tracking-widest text-gold-600 mb-4">
+              <h4 className="font-body uppercase tracking-widest text-gold-600 mb-4">
                 Mis Padrinos
               </h4>
-              <p className="font-body text-lg text-gray-700">
+              <p className="font-serif text-lg text-gray-700">
                 Oscar Galaviz y Carmen Fierro
               </p>
             </div>
@@ -288,10 +288,10 @@ export default function Home() {
             <div className="w-16 h-px bg-gold-400 mx-auto"></div>
 
             <div>
-              <h4 className="font-serif text-lg uppercase tracking-widest text-gold-600 mb-4">
+              <h4 className="font-body  uppercase tracking-widest text-gold-600 mb-4">
                 Mi Chambelán
               </h4>
-              <p className="font-body text-lg text-gray-700">
+              <p className="font-serif text-lg text-gray-700">
                 Diego Alonso Gallegos
               </p>
             </div>
@@ -404,7 +404,7 @@ export default function Home() {
                 target="_blank"
                 className="inline-block px-6 py-2 border border-gold-400 text-gold-600 hover:bg-gold-400 hover:text-white transition rounded-full text-sm uppercase tracking-wider"
               >
-                Ver Mapa
+                Como llegar
               </a>
             </div>
 
@@ -436,7 +436,7 @@ export default function Home() {
                 target="_blank"
                 className="inline-block px-6 py-2 border border-gold-400 text-gold-600 hover:bg-gold-400 hover:text-white transition rounded-full text-sm uppercase tracking-wider"
               >
-                Ver Mapa
+                Como llegar
               </a>
             </div>
           </div>
@@ -584,14 +584,14 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-mint-900 text-mint-100 py-12 text-center px-4">
+      <footer className="relative bg-mint-900 text-white py-12 text-center px-4">
         <h2 className="font-script text-4xl mb-4 text-gold-400">
           Aurora Guadalupe
         </h2>
-        <p className="font-serif text-sm tracking-widest opacity-70 mb-8">
+        <p className="font-serif text-sm tracking-widest mb-8 text-white">
           20 DE DICIEMBRE DE 2025
         </p>
-        <div className="text-xs opacity-50 max-w-md mx-auto border-t border-mint-700 pt-6">
+        <div className="text-xs text-white max-w-md mx-auto border-t border-mint-700 pt-6">
           <p>Gracias por ser parte de este momento tan especial en mi vida.</p>
         </div>
       </footer>
