@@ -516,8 +516,76 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. RSVP Form */}
-      <section id="rsvp" className="py-20 px-4 bg-mint-50">
+      {/* 7. Mesa de Regalos */}
+      <section className="relative py-20 px-4 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12 gsap-fade">
+            <div className="ornament-divider">
+              <span className="text-gold-400 text-2xl">✦</span>
+            </div>
+            <h2 className="font-script text-5xl text-mint-800 mb-4">
+              Mesa de Regalos
+            </h2>
+            <p className="text-gray-600 mt-4">
+              Tu presencia es nuestro mejor regalo, pero si deseas contribuir:
+            </p>
+          </div>
+
+          <div className="gsap-slide-up bg-mint-50 p-8 md:p-10 rounded-xl border border-gold-400/30 shadow-lg">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-gold-400/10 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-gold-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-center">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
+                  CLABE
+                </p>
+                <p className="font-mono text-lg md:text-xl font-bold text-mint-900 bg-white px-4 py-3 rounded border border-gold-400/20">
+                  722969040860608416
+                </p>
+              </div>
+
+              <div className="w-16 h-px bg-gold-400 mx-auto my-6"></div>
+
+              <div>
+                <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                  Beneficiario
+                </p>
+                <p className="font-serif text-lg text-gray-700">
+                  Lucero Abigail Galaviz Alcala
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                  Institución
+                </p>
+                <p className="font-serif text-lg text-gold-600 font-semibold">
+                  Mercado Pago W
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. RSVP Form */}
+      <section id="rsvp" className="relative py-20 px-4 bg-mint-50">
         <div className="max-w-lg mx-auto bg-white p-8 md:p-10 rounded-xl shadow-xl border-t-4 border-gold-400 gsap-slide-up">
           <div className="text-center mb-8">
             <h2 className="font-script text-4xl text-mint-900">
