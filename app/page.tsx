@@ -474,7 +474,7 @@ function HomeContent() {
                 Iglesia Santa Isabel del Portugal
               </p>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Iglesia+Santa+Isabel+del+Portugal"
+                href="https://maps.app.goo.gl/DguFzhy4Ctst4GBu6"
                 target="_blank"
                 className="inline-block px-6 py-2 border border-gold-400 text-gold-600 hover:bg-gold-400 hover:text-white transition rounded-full text-sm uppercase tracking-wider"
               >
@@ -506,7 +506,7 @@ function HomeContent() {
               <p className="text-gold-600 font-bold mb-4">Horario: 8:00 P.M.</p>
               <p className="text-gray-600 mb-6">Salón San Juan</p>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Salon+San+Juan"
+                href="https://maps.app.goo.gl/X4P3ZBt6wmD4anf67"
                 target="_blank"
                 className="inline-block px-6 py-2 border border-gold-400 text-gold-600 hover:bg-gold-400 hover:text-white transition rounded-full text-sm uppercase tracking-wider"
               >
