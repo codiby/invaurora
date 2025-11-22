@@ -42,6 +42,9 @@ export const metadata: Metadata = {
   title: "XV Años - Aurora Guadalupe",
   description:
     "Celebremos juntos los XV años de Aurora Guadalupe Cabrera Galaviz - 20 de Diciembre 2025",
+  openGraph: {
+    images: ["https://invaurora.vercel.app/images/IMG_2535.jpg"],
+  },
 };
 
 const fonts = [geistSans, geistMono, cinzel, pinyonScript, lato, montecarlo];

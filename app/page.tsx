@@ -25,7 +25,9 @@ function HomeContent() {
   const [guestName, setGuestName] = useState("");
   const [contactInfo, setContactInfo] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
 
   // Audio Control
   const toggleMusic = () => {
@@ -671,8 +673,8 @@ function HomeContent() {
                 <div className="mt-4 inline-block bg-gold-50 border border-gold-400 rounded-full px-6 py-2">
                   <p className="text-gold-700 font-semibold">
                     Tienes {inviteData.inviteCount}{" "}
-                    {inviteData.inviteCount === 1 ? "invitación" : "invitaciones"}{" "}
-                    disponibles
+                    {inviteData.inviteCount === 1 ? "pase" : "pases"} disponible
+                    {inviteData.inviteCount > 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
@@ -737,8 +739,8 @@ function HomeContent() {
                   {/* Error Message */}
                   {submitStatus === "error" && (
                     <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded">
-                      Hubo un error al enviar tu confirmación. Por favor
-                      intenta de nuevo.
+                      Hubo un error al enviar tu confirmación. Por favor intenta
+                      de nuevo.
                     </div>
                   )}
 
