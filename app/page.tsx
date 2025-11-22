@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState({
     days: 0,
@@ -790,5 +790,13 @@ export default function Home() {
         </div>
       </footer>
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-mint-50" />}>
+      <HomeContent />
+    </Suspense>
   );
 }
