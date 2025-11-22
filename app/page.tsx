@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -13,6 +15,17 @@ export default function Home() {
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Invite state
+  const [inviteData, setInviteData] = useState<{
+    inviteId: string;
+    inviteCount: number;
+  } | null>(null);
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [guestName, setGuestName] = useState("");
+  const [contactInfo, setContactInfo] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
   // Audio Control
   const toggleMusic = () => {
@@ -42,6 +55,35 @@ export default function Home() {
     };
     playAudio();
   }, []);
+
+  // Handle invite query parameter and localStorage
+  useEffect(() => {
+    const iParam = searchParams.get("i");
+    if (!iParam) return;
+
+    try {
+      // Decode base64 and parse JSON
+      const decoded = atob(iParam);
+      const data = JSON.parse(decoded);
+
+      if (data.invites && typeof data.invites === "number") {
+        const inviteId = iParam; // Use the encoded param as unique ID
+        const inviteCount = data.invites;
+
+        setInviteData({ inviteId, inviteCount });
+
+        // Check localStorage
+        const storageKey = `invite_accepted_${inviteId}`;
+        const accepted = localStorage.getItem(storageKey);
+
+        if (accepted) {
+          setIsAccepted(true);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to parse invite parameter:", error);
+    }
+  }, [searchParams]);
 
   // Countdown Logic
   useEffect(() => {
@@ -129,29 +171,59 @@ export default function Home() {
     });
   }, []);
 
-  // RSVP Handling
-  const handleRSVP = (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle invite acceptance submission
+  const handleInviteSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const guests = formData.get("guests") as string;
 
-    const btn = e.currentTarget.querySelector(
-      'button[type="submit"]'
-    ) as HTMLButtonElement;
-    const originalText = btn.innerText;
+    if (!inviteData) return;
 
-    btn.innerText = "Enviando...";
-    btn.disabled = true;
+    // Validate guest name
+    if (!guestName.trim()) {
+      alert("Por favor ingresa tu nombre");
+      return;
+    }
 
-    setTimeout(() => {
-      alert(
-        `¡Gracias ${name}! Hemos recibido tu confirmación para ${guests} persona(s).`
+    if (!contactInfo.trim()) {
+      alert("Por favor ingresa tu información de contacto");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+
+    try {
+      const response = await fetch("/api/invites/accept", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          invite_id: inviteData.inviteId,
+          guest_name: guestName.trim(),
+          contact_info: contactInfo.trim(),
+          invite_count: inviteData.inviteCount,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit");
+      }
+
+      // Success - save to localStorage
+      const storageKey = `invite_accepted_${inviteData.inviteId}`;
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ accepted: true, timestamp: Date.now() })
       );
-      btn.innerText = "¡Confirmado!";
-      btn.classList.add("bg-green-700");
-      e.currentTarget.reset();
-    }, 1500);
+
+      setIsAccepted(true);
+      setSubmitStatus("success");
+    } catch (error) {
+      console.error("Error submitting invite:", error);
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -584,70 +656,124 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. RSVP Form */}
+      {/* 8. RSVP / Invite Form */}
       <section id="rsvp" className="relative py-20 px-4 bg-mint-50">
         <div className="max-w-lg mx-auto bg-white p-8 md:p-10 rounded-xl shadow-xl border-t-4 border-gold-400 gsap-slide-up">
-          <div className="text-center mb-8">
-            <h2 className="font-script text-4xl text-mint-900">
-              Confirmar Asistencia
-            </h2>
-            <p className="text-gray-500 mt-2">
-              Por favor confirma antes del 1 de Diciembre
-            </p>
-          </div>
+          {inviteData ? (
+            <>
+              <div className="text-center mb-8">
+                <h2 className="font-script text-4xl text-mint-900">
+                  Confirmar Asistencia
+                </h2>
+                <p className="text-gray-500 mt-2">
+                  Por favor confirma antes del 1 de Diciembre
+                </p>
+                <div className="mt-4 inline-block bg-gold-50 border border-gold-400 rounded-full px-6 py-2">
+                  <p className="text-gold-700 font-semibold">
+                    Tienes {inviteData.inviteCount}{" "}
+                    {inviteData.inviteCount === 1 ? "invitación" : "invitaciones"}{" "}
+                    disponibles
+                  </p>
+                </div>
+              </div>
 
-          <form id="rsvpForm" onSubmit={handleRSVP} className="space-y-6">
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-1">
-                Nombre Completo
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                className="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md focus:bg-white transition"
-                placeholder="Tu nombre"
-              />
-            </div>
+              {isAccepted ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-2xl text-mint-900 mb-2">
+                    ¡Confirmación Recibida!
+                  </h3>
+                  <p className="text-gray-600">
+                    Gracias por confirmar tu asistencia. ¡Nos vemos el 20 de
+                    diciembre!
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleInviteSubmit} className="space-y-6">
+                  {/* Guest Name */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-1">
+                      Tu Nombre Completo *
+                    </label>
+                    <input
+                      type="text"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      required
+                      className="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md focus:bg-white transition"
+                      placeholder="Nombre completo"
+                    />
+                  </div>
 
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-1">
-                Número de Personas
-              </label>
-              <select
-                id="guests"
-                name="guests"
-                className="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md focus:bg-white transition"
-              >
-                <option value="1">1 Persona</option>
-                <option value="2">2 Personas</option>
-                <option value="3">3 Personas</option>
-                <option value="4">4 Personas</option>
-                <option value="5">Familia (5+)</option>
-              </select>
-            </div>
+                  {/* Contact Info */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-1">
+                      Email o Teléfono de Contacto *
+                    </label>
+                    <input
+                      type="text"
+                      value={contactInfo}
+                      onChange={(e) => setContactInfo(e.target.value)}
+                      required
+                      className="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md focus:bg-white transition"
+                      placeholder="ejemplo@email.com o 555-1234"
+                    />
+                  </div>
 
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-1">
-                Mensaje para Aurora (Opcional)
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={3}
-                className="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-md focus:bg-white transition"
-                placeholder="Escribe una felicitación..."
-              ></textarea>
-            </div>
+                  {/* Error Message */}
+                  {submitStatus === "error" && (
+                    <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded">
+                      Hubo un error al enviar tu confirmación. Por favor
+                      intenta de nuevo.
+                    </div>
+                  )}
 
-            <button
-              type="submit"
-              className="w-full bg-mint-800 text-white font-serif uppercase tracking-widest py-4 rounded hover:bg-mint-900 transition duration-300 border border-transparent hover:border-gold-400"
-            >
-              Enviar Confirmación
-            </button>
-          </form>
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full font-serif uppercase tracking-widest py-4 rounded transition duration-300 ${
+                      isSubmitting
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-mint-800 text-white hover:bg-mint-900 border border-transparent hover:border-gold-400"
+                    }`}
+                  >
+                    {isSubmitting ? "Enviando..." : "Confirmar Asistencia"}
+                  </button>
+                </form>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <h2 className="font-script text-4xl text-mint-900">
+                  Invitación Requerida
+                </h2>
+                <p className="text-gray-500 mt-4">
+                  Esta página requiere un enlace de invitación válido para
+                  confirmar tu asistencia.
+                </p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Si recibiste una invitación, por favor usa el enlace
+                  proporcionado.
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
